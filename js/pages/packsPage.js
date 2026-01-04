@@ -7,7 +7,10 @@ export default async function PacksPage() {
 
   const root = el("div", {}, [
     el("h2", { style: "margin:8px 0 10px 0", text: "Pacotes de Conteúdo (Micro-DLC)" }),
-    el("p", { style: "color:rgba(245,245,247,.72);margin-top:0", text: "Neste MVP os pacotes estão no repositório. Em AAA, vêm por CDN com assinatura, rollback e cache." }),
+    el("p", {
+      style: "color:rgba(245,245,247,.72);margin-top:0",
+      text: "Pacote ativo é salvo no dispositivo. Em AAA: CDN + assinatura + rollback + cache."
+    }),
     el("div", { class: "hr" })
   ]);
 
@@ -18,8 +21,15 @@ export default async function PacksPage() {
         card({
           title: `${p.manifest.name} • v${p.manifest.version}`,
           subtitle: `Compatível: engine >= ${p.manifest.minEngineVersion}\nPublisher: ${p.manifest.publisher}`,
-          rightEl: el("span", { class: "badge", style: `border-color:rgba(229,9,20,.35);color:rgba(245,245,247,.9)` , text: isActive ? "ATIVO" : "ATIVAR" }),
-          onClick: () => store.setActivePack(p.manifest.id)
+          rightEl: el("span", {
+            class: "badge",
+            style: "border-color:rgba(229,9,20,.35);color:rgba(245,245,247,.9)",
+            text: isActive ? "ATIVO" : "ATIVAR"
+          }),
+          onClick: () => {
+            store.setActivePack(p.manifest.id);
+            location.hash = "#/packs";
+          }
         })
       ])
     );

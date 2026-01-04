@@ -1,4 +1,5 @@
 import Home from "./pages/home.js";
+import Career from "./pages/career.js";
 import Study from "./pages/study.js";
 import Simulation from "./pages/simulation.js";
 import PacksPage from "./pages/packsPage.js";
@@ -6,6 +7,7 @@ import NotFound from "./pages/notfound.js";
 
 const routes = {
   "/": Home,
+  "/career": Career,
   "/study": Study,
   "/simulation": Simulation,
   "/packs": PacksPage

@@ -1,4 +1,4 @@
-const CACHE = "aps-cache-v1";
+const CACHE = "aps-cache-v3";
 const ASSETS = [
   "./",
   "./index.html",
@@ -9,6 +9,7 @@ const ASSETS = [
   "./js/store.js",
   "./js/engine.js",
   "./js/packs.js",
+  "./js/registry.js",
   "./js/pages/home.js",
   "./js/pages/study.js",
   "./js/pages/simulation.js",
@@ -34,7 +35,5 @@ self.addEventListener("activate", (e) => {
 });
 
 self.addEventListener("fetch", (e) => {
-  e.respondWith(
-    caches.match(e.request).then((cached) => cached || fetch(e.request))
-  );
+  e.respondWith(caches.match(e.request).then((cached) => cached || fetch(e.request)));
 });

@@ -7,7 +7,8 @@ export function createSimulation(scenario, seed) {
     score: 0,
     criticalMistakes: 0,
     doneActions: new Set(),
-    lastEvent: "Simulação iniciada."
+    lastEvent: "Simulação iniciada.",
+    events: [] // timeline: { t, phase, actionId, label, deltaScore, deltaCritical }
   };
   return attachView(scenario, state);
 }
@@ -43,6 +44,19 @@ function advancePhaseIfNeeded(scenario, phaseIndex, doneActions) {
   return phaseIndex;
 }
 
+function computeMissingRules(scenario, doneActions, nextPhaseName) {
+  const missing = [];
+  const nextPos = phaseOrderIndex(scenario.phases, nextPhaseName);
+
+  for (const rule of scenario.rules?.mustDoBefore || []) {
+    const beforePos = phaseOrderIndex(scenario.phases, rule.beforePhase);
+    if (beforePos <= nextPos && !doneActions.has(rule.actionId)) {
+      missing.push(rule);
+    }
+  }
+  return missing;
+}
+
 export function applyAction(state, scenario, actionId) {
   const currentPhase = scenario.phases[state.phaseIndex]?.phase || "Debrief";
   const currentActions = scenario.phases[state.phaseIndex]?.actions || [];
@@ -56,25 +70,42 @@ export function applyAction(state, scenario, actionId) {
   const repeated = nextDone.has(action.id);
   nextDone.add(action.id);
 
-  let score = state.score + (action.severity === "critical" ? 15 : 5);
-  if (repeated) score -= 3;
+  let deltaScore = action.severity === "critical" ? 15 : 5;
+  if (repeated) deltaScore -= 3;
+
+  let score = state.score + deltaScore;
+  let criticalMistakes = state.criticalMistakes;
+  let deltaCritical = 0;
 
   const nextTime = state.timeSec + (action.timeCostSec || 0);
   let nextPhaseIndex = advancePhaseIfNeeded(scenario, state.phaseIndex, nextDone);
 
-  let criticalMistakes = state.criticalMistakes;
-
+  // Se avançou, penaliza regras obrigatórias não feitas
   if (nextPhaseIndex !== state.phaseIndex) {
     const nextPhase = scenario.phases[nextPhaseIndex]?.phase || "Debrief";
-    const nextPhasePos = phaseOrderIndex(scenario.phases, nextPhase);
-    for (const rule of scenario.rules?.mustDoBefore || []) {
-      const beforePos = phaseOrderIndex(scenario.phases, rule.beforePhase);
-      if (beforePos <= nextPhasePos && !nextDone.has(rule.actionId)) {
-        if (rule.criticalIfMissed) criticalMistakes += 1;
-        score -= rule.criticalIfMissed ? 25 : 10;
+    const missing = computeMissingRules(scenario, nextDone, nextPhase);
+
+    for (const m of missing) {
+      if (m.criticalIfMissed) {
+        criticalMistakes += 1;
+        deltaCritical += 1;
+        score -= 25;
+        deltaScore -= 25;
+      } else {
+        score -= 10;
+        deltaScore -= 10;
       }
     }
   }
+
+  const newEvent = {
+    t: nextTime,
+    phase: currentPhase,
+    actionId: action.id,
+    label: action.label,
+    deltaScore,
+    deltaCritical
+  };
 
   const base = {
     ...state,
@@ -83,7 +114,8 @@ export function applyAction(state, scenario, actionId) {
     phaseIndex: nextPhaseIndex,
     score,
     criticalMistakes,
-    lastEvent: `Executou: ${action.label} (fase: ${currentPhase})`
+    lastEvent: `Executou: ${action.label} (fase: ${currentPhase})`,
+    events: state.events.concat([newEvent])
   };
 
   if (nextPhaseIndex >= scenario.phases.length) {
@@ -94,4 +126,31 @@ export function applyAction(state, scenario, actionId) {
   }
 
   return attachView(scenario, base);
+}
+
+/**
+ * Debrief estruturado (AAA v1)
+ */
+export function buildDebrief(state, scenario) {
+  const done = state.doneActions || new Set();
+  const required = scenario.rules?.mustDoBefore || [];
+
+  const missedCritical = [];
+  const missedNonCritical = [];
+
+  for (const r of required) {
+    if (!done.has(r.actionId)) {
+      if (r.criticalIfMissed) missedCritical.push(r.actionId);
+      else missedNonCritical.push(r.actionId);
+    }
+  }
+
+  return {
+    scenarioId: state.scenarioId,
+    score: state.score,
+    criticalMistakes: state.criticalMistakes,
+    timeline: state.events.slice(),
+    missedCritical,
+    missedNonCritical
+  };
 }

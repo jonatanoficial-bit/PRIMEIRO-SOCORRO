@@ -5,6 +5,7 @@
       "title": "XABCDE (Trauma) — Avaliação Primária",
       "summary": "Prioriza hemorragia exsanguinante (X), depois vias aéreas (A), respiração (B), circulação (C), déficit neurológico (D) e exposição/ambiente (E).",
       "scope": "PRIMEIROS_SOCORROS",
+      "tags": ["Trauma", "XABCDE", "APH", "Hemorragia", "Avaliação Primária"],
       "steps": [
         "Segurança da cena e EPIs.",
         "X: controlar hemorragia massiva visível (pressão direta/torniquete quando indicado).",
@@ -20,6 +21,7 @@
       "title": "Engasgo — Conduta inicial",
       "summary": "Para vítima consciente: golpes nas costas + compressões (abdominais >1 ano; torácicas em lactentes).",
       "scope": "PRIMEIROS_SOCORROS",
+      "tags": ["Vias Aéreas", "Engasgo", "SBV", "Pediatria"],
       "steps": [
         "Confirmar obstrução (tosse ineficaz, não fala, sinais de sufocação).",
         "Acionar ajuda e manter segurança.",

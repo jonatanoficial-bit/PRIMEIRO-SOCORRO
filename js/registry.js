@@ -1,7 +1,16 @@
 import { store } from "./store.js";
+import { verifyPack } from "./signature.js";
 
 export function getActivePackOrNull() {
-  return store.getActivePack();
+  const p = store.getActivePack();
+  if (!p) return null;
+
+  // se for pack do usuário, valida assinatura
+  if (p.__source === "user") {
+    const ok = verifyPack(p);
+    if (!ok) return null;
+  }
+  return p;
 }
 
 export function listScenarios() {
@@ -19,15 +28,6 @@ export function listProtocols() {
   return pack?.protocols?.protocols || [];
 }
 
-export function getProtocolById(id) {
-  const all = listProtocols();
-  return all.find((p) => p.id === id) || null;
-}
-
-/**
- * Netflix-like: agrupa protocolos por tags
- * Retorna: { tag: string, items: Protocol[] }[]
- */
 export function groupProtocolsByTag() {
   const protocols = listProtocols();
   const map = new Map();
@@ -40,7 +40,6 @@ export function groupProtocolsByTag() {
     }
   }
 
-  // Ordena por nome da tag e mantém itens por título
   const rows = Array.from(map.entries())
     .map(([tag, items]) => ({
       tag,

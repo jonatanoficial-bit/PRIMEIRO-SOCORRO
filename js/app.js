@@ -4,7 +4,10 @@ import { loadLocalPacks } from "./packs.js";
 import { store } from "./store.js";
 
 async function main() {
-  // Carrega packs locais (MVP). Depois vira CDN + cache.
+  // Persistência
+  store.hydrate();
+
+  // Packs locais
   const packs = await loadLocalPacks();
   store.setPacks(packs);
 
@@ -28,7 +31,7 @@ async function main() {
     try {
       await navigator.serviceWorker.register("./sw.js");
     } catch {
-      // silêncio: offline é bônus
+      // offline é bônus
     }
   }
 

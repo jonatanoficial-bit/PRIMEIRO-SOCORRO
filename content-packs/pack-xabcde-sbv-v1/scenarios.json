@@ -2,35 +2,143 @@
   "scenarios": [
     {
       "id": "scn-trauma-hemorragia-01",
-      "title": "Trauma com hemorragia externa (XABCDE)",
-      "brief": "Você chega em um local com uma vítima consciente após queda, com sangramento intenso em membro inferior. Recursos: luvas, gaze, torniquete.",
+      "title": "Trauma com hemorragia externa (XABCDE + START)",
+      "brief": "Local com duas vítimas após queda/impacto. Uma com sangramento intenso em membro inferior. Cena com riscos leves. Recursos: luvas, gaze, torniquete, manta térmica.",
       "protocolId": "prot-xabcde",
       "role": "bombeiro_civil",
+      "meta": {
+        "difficulty": "media",
+        "tags": ["Trauma", "Hemorragia", "XABCDE", "START", "Cena"],
+        "estimatedMin": 6
+      },
+      "environment": {
+        "hazards": [
+          { "id": "hz_glass", "label": "Vidro no chão (corte/contaminação)", "severity": "medio", "mitigationActionId": "a_mitigate_glass" }
+        ]
+      },
+      "inventory": {
+        "items": [
+          { "id": "luvas", "label": "Luvas", "qty": 2 },
+          { "id": "gaze", "label": "Gaze", "qty": 4 },
+          { "id": "torniquete", "label": "Torniquete", "qty": 1 },
+          { "id": "manta", "label": "Manta térmica", "qty": 1 }
+        ]
+      },
+      "patients": [
+        {
+          "id": "p1",
+          "label": "Vítima 01",
+          "initial": {
+            "conscious": true,
+            "breathing": true,
+            "pulse": true,
+            "bleedingMassive": true,
+            "shockIndex": 0.95,
+            "condition": "grave",
+            "canWalk": false
+          }
+        },
+        {
+          "id": "p2",
+          "label": "Vítima 02",
+          "initial": {
+            "conscious": true,
+            "breathing": true,
+            "pulse": true,
+            "bleedingMassive": false,
+            "shockIndex": 0.75,
+            "condition": "moderada",
+            "canWalk": true
+          }
+        }
+      ],
       "phases": [
         {
           "phase": "SceneBriefing",
           "actions": [
-            { "id": "a_scene_check", "label": "Avaliar cena e riscos", "hint": "Antes de encostar na vítima, verifique riscos e condições do ambiente.", "severity": "critical", "timeCostSec": 6 }
+            {
+              "id": "a_scene_check",
+              "label": "Avaliar cena e riscos",
+              "hint": "Antes de encostar nas vítimas, verifique riscos (vidro, trânsito, energia) e segurança do local.",
+              "severity": "critical",
+              "timeCostSec": 6
+            },
+            {
+              "id": "a_mitigate_glass",
+              "label": "Mitigar risco: vidro no chão",
+              "hint": "Afaste vítimas do vidro ou crie área segura. Mitigar riscos evita lesão do socorrista.",
+              "severity": "normal",
+              "timeCostSec": 10
+            }
           ]
         },
         {
           "phase": "SafetyCheck",
           "actions": [
-            { "id": "a_put_gloves", "label": "Colocar EPIs (luvas)", "hint": "Proteção do socorrista é regra de ouro.", "severity": "critical", "timeCostSec": 4 }
+            {
+              "id": "a_put_gloves",
+              "label": "Colocar EPIs (luvas)",
+              "hint": "Proteção do socorrista é regra de ouro.",
+              "severity": "critical",
+              "timeCostSec": 4
+            },
+            {
+              "id": "a_call_backup",
+              "label": "Solicitar apoio (equipe/viaturas)",
+              "hint": "Duas vítimas: peça apoio cedo.",
+              "severity": "normal",
+              "timeCostSec": 8
+            }
           ]
         },
         {
           "phase": "PrimarySurvey",
           "actions": [
-            { "id": "a_control_bleed", "label": "X: Controlar hemorragia massiva", "hint": "Pressão direta e/ou torniquete quando indicado. Prioridade absoluta.", "severity": "critical", "timeCostSec": 10 }
+            { "id": "a_switch_p1", "label": "Focar na Vítima 01", "hint": "Selecione em qual vítima você está atuando.", "severity": "normal", "timeCostSec": 1 },
+            { "id": "a_switch_p2", "label": "Focar na Vítima 02", "hint": "Selecione em qual vítima você está atuando.", "severity": "normal", "timeCostSec": 1 },
+
+            {
+              "id": "a_start_triage",
+              "label": "START: Triagem rápida da vítima focada",
+              "hint": "Aplique START (andar? respiração? perfusão? consciência?) e marque prioridade.",
+              "severity": "critical",
+              "timeCostSec": 10
+            },
+
+            {
+              "id": "a_x_bleed_control",
+              "label": "X: Controlar hemorragia massiva (vítima focada)",
+              "hint": "Use gaze/pressão direta. Se necessário, torniquete. Prioridade absoluta.",
+              "severity": "critical",
+              "timeCostSec": 12
+            },
+            { "id": "a_a_airway_check", "label": "A: Checar via aérea (vítima focada)", "hint": "Confirme se mantém via aérea e consegue falar.", "severity": "normal", "timeCostSec": 6 },
+            { "id": "a_b_breathing_check", "label": "B: Checar respiração (vítima focada)", "hint": "Avaliar frequência, esforço respiratório, simetria.", "severity": "normal", "timeCostSec": 6 },
+            { "id": "a_c_circulation_check", "label": "C: Checar perfusão/pulso (vítima focada)", "hint": "Pulso, perfusão, choque. Reavaliar sangramentos.", "severity": "normal", "timeCostSec": 6 }
           ]
         },
         {
           "phase": "InterventionLoop",
           "actions": [
-            { "id": "a_airway_check", "label": "A: Checar via aérea", "hint": "Confirme se a vítima mantém via aérea e fala.", "severity": "normal", "timeCostSec": 6 },
-            { "id": "a_breathing_check", "label": "B: Checar respiração", "hint": "Observar, ouvir e sentir respiração; sinais de dificuldade.", "severity": "normal", "timeCostSec": 6 },
-            { "id": "a_circulation_check", "label": "C: Checar perfusão/pulso", "hint": "Perfusão e choque. Reavaliar sangramentos.", "severity": "normal", "timeCostSec": 6 }
+            {
+              "id": "a_reassess",
+              "label": "Reavaliar (XABCDE rápido) — vítima focada",
+              "hint": "Reavaliação é obrigatória antes de novas ações importantes.",
+              "severity": "critical",
+              "timeCostSec": 8
+            },
+
+            { "id": "a_switch_p1", "label": "Trocar para Vítima 01", "hint": "Alternar entre vítimas conforme prioridade.", "severity": "normal", "timeCostSec": 1 },
+            { "id": "a_switch_p2", "label": "Trocar para Vítima 02", "hint": "Alternar entre vítimas conforme prioridade.", "severity": "normal", "timeCostSec": 1 },
+
+            {
+              "id": "a_manage_hypothermia",
+              "label": "Prevenir hipotermia (manta térmica) — vítima focada",
+              "hint": "Use manta térmica quando indicado. Ajuda a evitar piora do choque.",
+              "severity": "normal",
+              "timeCostSec": 8
+            },
+            { "id": "a_monitor", "label": "Monitorar sinais (vítima focada)", "hint": "Observar rebaixamento, piora respiratória, choque.", "severity": "normal", "timeCostSec": 6 }
           ]
         },
         {
@@ -42,7 +150,7 @@
         {
           "phase": "Handover",
           "actions": [
-            { "id": "a_handover", "label": "Passagem de caso (handover) + registro", "hint": "Relate achados e intervenções realizadas.", "severity": "normal", "timeCostSec": 12 }
+            { "id": "a_handover", "label": "Encerrar: gerar SBAR + registro", "hint": "O jogo gera um SBAR automático com base no caso e nas ações.", "severity": "normal", "timeCostSec": 14 }
           ]
         }
       ],
@@ -50,7 +158,8 @@
         "mustDoBefore": [
           { "actionId": "a_scene_check", "beforePhase": "SafetyCheck", "criticalIfMissed": true },
           { "actionId": "a_put_gloves", "beforePhase": "PrimarySurvey", "criticalIfMissed": true },
-          { "actionId": "a_control_bleed", "beforePhase": "InterventionLoop", "criticalIfMissed": true }
+          { "actionId": "a_start_triage", "beforePhase": "InterventionLoop", "criticalIfMissed": true },
+          { "actionId": "a_call_samu", "beforePhase": "Handover", "criticalIfMissed": true }
         ]
       }
     }

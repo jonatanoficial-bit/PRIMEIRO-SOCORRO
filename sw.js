@@ -1,4 +1,4 @@
-const CACHE = "aps-cache-v3";
+const CACHE = "aps-cache-v4";
 const ASSETS = [
   "./",
   "./index.html",
@@ -10,7 +10,9 @@ const ASSETS = [
   "./js/engine.js",
   "./js/packs.js",
   "./js/registry.js",
+  "./js/signature.js",
   "./js/pages/home.js",
+  "./js/pages/career.js",
   "./js/pages/study.js",
   "./js/pages/simulation.js",
   "./js/pages/packsPage.js",

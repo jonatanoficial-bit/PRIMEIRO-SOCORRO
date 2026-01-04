@@ -1,0 +1,58 @@
+{
+  "scenarios": [
+    {
+      "id": "scn-trauma-hemorragia-01",
+      "title": "Trauma com hemorragia externa (XABCDE)",
+      "brief": "Você chega em um local com uma vítima consciente após queda, com sangramento intenso em membro inferior. Recursos: luvas, gaze, torniquete.",
+      "protocolId": "prot-xabcde",
+      "role": "bombeiro_civil",
+      "phases": [
+        {
+          "phase": "SceneBriefing",
+          "actions": [
+            { "id": "a_scene_check", "label": "Avaliar cena e riscos", "hint": "Antes de encostar na vítima, verifique riscos e condições do ambiente.", "severity": "critical", "timeCostSec": 6 }
+          ]
+        },
+        {
+          "phase": "SafetyCheck",
+          "actions": [
+            { "id": "a_put_gloves", "label": "Colocar EPIs (luvas)", "hint": "Proteção do socorrista é regra de ouro.", "severity": "critical", "timeCostSec": 4 }
+          ]
+        },
+        {
+          "phase": "PrimarySurvey",
+          "actions": [
+            { "id": "a_control_bleed", "label": "X: Controlar hemorragia massiva", "hint": "Pressão direta e/ou torniquete quando indicado. Prioridade absoluta.", "severity": "critical", "timeCostSec": 10 }
+          ]
+        },
+        {
+          "phase": "InterventionLoop",
+          "actions": [
+            { "id": "a_airway_check", "label": "A: Checar via aérea", "hint": "Confirme se a vítima mantém via aérea e fala.", "severity": "normal", "timeCostSec": 6 },
+            { "id": "a_breathing_check", "label": "B: Checar respiração", "hint": "Observar, ouvir e sentir respiração; sinais de dificuldade.", "severity": "normal", "timeCostSec": 6 },
+            { "id": "a_circulation_check", "label": "C: Checar perfusão/pulso", "hint": "Perfusão e choque. Reavaliar sangramentos.", "severity": "normal", "timeCostSec": 6 }
+          ]
+        },
+        {
+          "phase": "Escalation",
+          "actions": [
+            { "id": "a_call_samu", "label": "Acionar suporte (SAMU/Resgate)", "hint": "Chamar ajuda cedo quando necessário.", "severity": "critical", "timeCostSec": 8 }
+          ]
+        },
+        {
+          "phase": "Handover",
+          "actions": [
+            { "id": "a_handover", "label": "Passagem de caso (handover) + registro", "hint": "Relate achados e intervenções realizadas.", "severity": "normal", "timeCostSec": 12 }
+          ]
+        }
+      ],
+      "rules": {
+        "mustDoBefore": [
+          { "actionId": "a_scene_check", "beforePhase": "SafetyCheck", "criticalIfMissed": true },
+          { "actionId": "a_put_gloves", "beforePhase": "PrimarySurvey", "criticalIfMissed": true },
+          { "actionId": "a_control_bleed", "beforePhase": "InterventionLoop", "criticalIfMissed": true }
+        ]
+      }
+    }
+  ]
+}

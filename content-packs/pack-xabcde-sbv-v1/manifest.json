@@ -1,0 +1,10 @@
+{
+  "id": "pack-xabcde-sbv-v1",
+  "name": "XABCDE + SBV (Base)",
+  "version": "1.0.0",
+  "minEngineVersion": "0.1.0",
+  "publisher": "Vale Produção / App Primeiro Socorro",
+  "schemaVersion": "1.0.0",
+  "createdAt": "2026-01-04",
+  "referencesNote": "Base educacional. Em produção, inserir referências oficiais detalhadas e revisão clínica assinada."
+}

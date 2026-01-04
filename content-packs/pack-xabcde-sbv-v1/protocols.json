@@ -1,0 +1,32 @@
+{
+  "protocols": [
+    {
+      "id": "prot-xabcde",
+      "title": "XABCDE (Trauma) — Avaliação Primária",
+      "summary": "Prioriza hemorragia exsanguinante (X), depois vias aéreas (A), respiração (B), circulação (C), déficit neurológico (D) e exposição/ambiente (E).",
+      "scope": "PRIMEIROS_SOCORROS",
+      "steps": [
+        "Segurança da cena e EPIs.",
+        "X: controlar hemorragia massiva visível (pressão direta/torniquete quando indicado).",
+        "A: garantir via aérea e proteger coluna cervical quando trauma.",
+        "B: avaliar respiração e tratar falhas imediatas.",
+        "C: avaliar perfusão, pulso e controlar sangramentos restantes.",
+        "D: avaliar nível de consciência (AVPU/Glasgow) e pupilas.",
+        "E: expor para buscar lesões ocultas e prevenir hipotermia."
+      ]
+    },
+    {
+      "id": "prot-engasgo",
+      "title": "Engasgo — Conduta inicial",
+      "summary": "Para vítima consciente: golpes nas costas + compressões (abdominais >1 ano; torácicas em lactentes).",
+      "scope": "PRIMEIROS_SOCORROS",
+      "steps": [
+        "Confirmar obstrução (tosse ineficaz, não fala, sinais de sufocação).",
+        "Acionar ajuda e manter segurança.",
+        "Adultos/crianças: alternar golpes interescapulares e compressões abdominais quando indicado.",
+        "Lactentes: golpes interescapulares e compressões torácicas (não compressões abdominais).",
+        "Se perder consciência: iniciar RCP e seguir protocolo de via aérea."
+      ]
+    }
+  ]
+}

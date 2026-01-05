@@ -1,13 +1,12 @@
 /* ================================
    APP PRIMEIRO SOCORRO
-   AAA CINEMATIC UI – v4.1
+   AAA CINEMATIC UI – v4.2 (Mobile Fit)
+   Corrige “zoom” e proporção da Home
    ================================ */
 
 :root {
   --bg: #0b0b0f;
-  --bg-soft: #121218;
   --card: #16161d;
-  --card-glass: rgba(255,255,255,0.03);
 
   --text: #f5f5f7;
   --muted: rgba(245,245,247,.65);
@@ -21,23 +20,31 @@
 
   --shadow-soft: 0 10px 30px rgba(0,0,0,.45);
   --shadow-strong: 0 25px 60px rgba(0,0,0,.65);
+
+  /* alturas e safe areas */
+  --navTopH: 62px;
+  --bottomNavH: 74px;
+  --safeTop: env(safe-area-inset-top, 0px);
+  --safeBottom: env(safe-area-inset-bottom, 0px);
+
+  /* escalas tipográficas (mobile-first) */
+  --h2: 22px;
+  --heroTitle: 22px;
 }
 
-/* RESET */
-* {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
 html, body {
-  margin: 0;
-  padding: 0;
+  margin: 0; padding: 0;
   background:
-    radial-gradient(1200px 600px at 20% -10%, rgba(229,9,20,.15), transparent 60%),
-    radial-gradient(800px 400px at 80% 10%, rgba(229,9,20,.08), transparent 60%),
+    radial-gradient(1200px 600px at 20% -10%, rgba(229,9,20,.13), transparent 60%),
+    radial-gradient(800px 400px at 80% 10%, rgba(229,9,20,.07), transparent 60%),
     var(--bg);
   color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Arial, sans-serif;
+  /* impede zoom visual estranho em alguns navegadores */
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
 }
 
 /* ================= HEADER ================= */
@@ -46,16 +53,19 @@ html, body {
   position: sticky;
   top: 0;
   z-index: 50;
+  height: var(--navTopH);
+  padding-top: var(--safeTop);
   background:
     linear-gradient(180deg, rgba(11,11,15,.92), rgba(11,11,15,.65) 70%, transparent);
   backdrop-filter: blur(14px);
 }
 
 .navInner {
+  height: calc(var(--navTopH) - var(--safeTop));
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 18px;
+  padding: 12px 16px;
 }
 
 .brand {
@@ -65,6 +75,7 @@ html, body {
   font-weight: 900;
   letter-spacing: .5px;
   cursor: pointer;
+  user-select: none;
 }
 
 .brandDot {
@@ -83,65 +94,93 @@ html, body {
 .navLink {
   text-decoration: none;
   color: var(--muted);
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 8px 10px;
+  border-radius: 999px;
 }
 
 .navLink.active {
   color: var(--text);
+  background: rgba(255,255,255,.04);
 }
 
-/* ================= CONTAINER ================= */
+/* ================= CONTAINER / PAGE ================= */
 
-.container {
-  max-width: 1100px;
-  margin: 0 auto;
-}
+.container { max-width: 1100px; margin: 0 auto; }
 
+/* Aqui está o “pulo do gato”:
+   reserva espaço real para a bottomNav fixa
+   e mantém conteúdo proporcional (sem sensação de zoom) */
 .pagePad {
-  padding: 18px;
+  padding: 14px 16px;
+  padding-bottom: calc(var(--bottomNavH) + var(--safeBottom) + 18px);
 }
 
 /* ================= HERO ================= */
 
 .hero {
   position: relative;
-  padding: 28px 22px;
   border-radius: var(--radius-lg);
   background:
-    linear-gradient(135deg, rgba(229,9,20,.35), rgba(229,9,20,.05)),
+    linear-gradient(135deg, rgba(229,9,20,.32), rgba(229,9,20,.05)),
     var(--card);
   box-shadow: var(--shadow-strong);
-  margin-bottom: 26px;
+  margin-bottom: 18px;
+  overflow: hidden;
+}
+
+/* “capa” interna em grid: no mobile empilha melhor */
+.heroInner{
+  padding: 18px 16px;
+  display: grid;
+  gap: 12px;
 }
 
 .heroTag {
   display: inline-block;
   font-size: 12px;
-  font-weight: 700;
-  color: var(--red);
-  background: var(--red-soft);
+  font-weight: 800;
+  color: var(--text);
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.10);
   padding: 6px 12px;
   border-radius: 999px;
-  margin-bottom: 12px;
+  width: fit-content;
 }
 
 .heroTitle {
-  font-size: 26px;
-  font-weight: 900;
-  line-height: 1.2;
+  font-size: var(--heroTitle);
+  font-weight: 950;
+  line-height: 1.15;
+  letter-spacing: .2px;
+  margin: 0;
 }
 
 .heroSub {
-  margin-top: 10px;
+  margin: 0;
   color: var(--muted);
-  max-width: 520px;
+  line-height: 1.35;
+  max-width: 44ch;
 }
 
-.heroActions {
-  display: flex;
-  gap: 12px;
-  margin-top: 18px;
+.heroGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
 }
+
+/* mini cards dentro do hero */
+.heroMini {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 16px;
+  padding: 12px 14px;
+  box-shadow: 0 10px 24px rgba(0,0,0,.30);
+}
+
+.heroMiniTitle { font-weight: 900; font-size: 14px; }
+.heroMiniSub { margin-top: 4px; color: var(--muted); font-size: 13px; }
 
 /* ================= BUTTONS ================= */
 
@@ -150,15 +189,13 @@ html, body {
   color: #fff;
   border: none;
   border-radius: 999px;
-  padding: 12px 22px;
-  font-weight: 800;
+  padding: 12px 18px;
+  font-weight: 900;
   cursor: pointer;
-  box-shadow: 0 10px 30px rgba(229,9,20,.45);
+  box-shadow: 0 10px 26px rgba(229,9,20,.38);
 }
 
-.btnPrimary:active {
-  transform: scale(.97);
-}
+.btnPrimary:active { transform: scale(.97); }
 
 .bottomBtn {
   background: rgba(255,255,255,.05);
@@ -166,12 +203,26 @@ html, body {
   border: none;
   padding: 10px 14px;
   border-radius: 999px;
-  font-weight: 700;
+  font-weight: 800;
+  font-size: 13px;
 }
 
 .bottomBtn.active {
   background: var(--red-soft);
   color: var(--text);
+}
+
+/* ================= SECTIONS / TITLES ================= */
+
+h2 {
+  font-size: var(--h2);
+  margin: 8px 0 10px 0;
+  font-weight: 950;
+}
+
+.sectionTitle{
+  font-weight: 950;
+  margin: 16px 0 10px 0;
 }
 
 /* ================= CARDS ================= */
@@ -181,12 +232,13 @@ html, body {
     linear-gradient(180deg, rgba(255,255,255,.05), transparent 60%),
     var(--card);
   border-radius: var(--radius-md);
-  padding: 18px;
+  padding: 16px;
   box-shadow: var(--shadow-soft);
+  border: 1px solid rgba(255,255,255,.06);
 }
 
 .cardTitle {
-  font-weight: 900;
+  font-weight: 950;
   font-size: 16px;
 }
 
@@ -195,29 +247,32 @@ html, body {
   white-space: pre-line;
   font-size: 14px;
   color: var(--muted);
+  line-height: 1.35;
+}
+
+/* cards clicáveis */
+.card.clickable:hover{
+  border-color: rgba(229,9,20,.25);
+  transform: translateY(-1px);
+  transition: transform .12s ease, border-color .12s ease;
 }
 
 /* ================= CAROUSEL ================= */
 
-.carouselRow {
-  margin-bottom: 26px;
-}
+.carouselRow { margin-bottom: 18px; }
 
 .carouselTitle {
-  font-weight: 900;
+  font-weight: 950;
   margin: 0 0 10px 4px;
 }
 
 .carouselItems {
   display: flex;
-  gap: 14px;
+  gap: 12px;
   overflow-x: auto;
   padding-bottom: 6px;
 }
-
-.carouselItems::-webkit-scrollbar {
-  display: none;
-}
+.carouselItems::-webkit-scrollbar { display: none; }
 
 /* ================= ACTION BUTTONS ================= */
 
@@ -236,15 +291,8 @@ html, body {
   box-shadow: inset 0 0 0 1px rgba(229,9,20,.25);
 }
 
-.aTitle {
-  font-weight: 800;
-}
-
-.aHint {
-  font-size: 13px;
-  margin-top: 4px;
-  color: var(--muted);
-}
+.aTitle { font-weight: 900; }
+.aHint { font-size: 13px; margin-top: 4px; color: var(--muted); line-height: 1.32; }
 
 /* ================= BADGE ================= */
 
@@ -253,7 +301,8 @@ html, body {
   padding: 6px 12px;
   border-radius: 999px;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 800;
+  width: fit-content;
 }
 
 /* ================= FOOTER NAV ================= */
@@ -262,14 +311,16 @@ html, body {
   position: fixed;
   bottom: 0;
   width: 100%;
+  z-index: 60;
+  padding-bottom: var(--safeBottom);
   background:
-    linear-gradient(180deg, transparent, rgba(11,11,15,.9) 30%);
+    linear-gradient(180deg, transparent, rgba(11,11,15,.92) 35%);
 }
 
 .bottomNavInner {
   display: grid;
   gap: 10px;
-  padding: 10px 12px 16px;
+  padding: 10px 12px 14px;
 }
 
 /* ================= DIVIDER ================= */
@@ -277,5 +328,18 @@ html, body {
 .hr {
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);
-  margin: 18px 0;
+  margin: 16px 0;
+}
+
+/* ================= RESPONSIVE (maiores) ================= */
+
+/* Tablets e desktop: aumenta hero e usa 2 colunas */
+@media (min-width: 720px) {
+  :root {
+    --h2: 24px;
+    --heroTitle: 28px;
+  }
+  .pagePad { padding: 18px; padding-bottom: calc(var(--bottomNavH) + var(--safeBottom) + 22px); }
+  .heroInner { padding: 26px 22px; }
+  .heroGrid { grid-template-columns: 1fr 1fr; }
 }

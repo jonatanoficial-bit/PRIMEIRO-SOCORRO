@@ -343,3 +343,11 @@ h2 {
   .heroInner { padding: 26px 22px; }
   .heroGrid { grid-template-columns: 1fr 1fr; }
 }
+.homeGrid{
+  display:grid;
+  gap:12px;
+  grid-template-columns:1fr;
+}
+@media (min-width:720px){
+  .homeGrid{ grid-template-columns:1fr 1fr; }
+}
